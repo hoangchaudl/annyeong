@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Something Special for You</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #E0E1E9;
+            --background-color: #FFDDE4;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            width: 80%;
+            max-width: 250px;
+        }
+
+        button:hover {
+            background-color: #ff4757;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
+        }
+
+        input[type="date"] {
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 50px;
+            border: 2px solid var(--secondary-color);
+            margin: 20px 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .activities {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            margin-top: 20px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 15px;
+            border: 2px solid var(--secondary-color);
+            font-size: 1rem;
+            margin-top: 10px;
+            resize: vertical;
+        }
+
+        #secondPage, #thirdPage {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("_TUyeiZcK9jXc9iCH");
+        })();
+
+        let selectedDate = '';
+        let selectedActivities = [];
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(page => page.style.display = 'none');
+            document.getElementById(pageId).style.display = 'block';
+            document.getElementById(pageId).classList.add('fade-in');
+        }
+
+        function showSecondPage() {
+            showPage('secondPage');
+        }
+
+        function showThirdPage() {
+            selectedDate = document.getElementById('datePicker').value;
+            if (selectedDate) {
+                showPage('thirdPage');
+            } else {
+                alert('Please select a date!');
+            }
+        }
+
+        function submitActivities() {
+            const activityCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]:checked');
+            selectedActivities = Array.from(activityCheckboxes).map(cb => cb.nextSibling.textContent.trim());
+
+            const otherActivity = document.getElementById('otherActivity').value;
+            if (otherActivity) {
+                selectedActivities.push(otherActivity);
+            }
+
+            const templateParams = {
+                date: selectedDate,
+                activities: selectedActivities.join(', '),
+                to_name: "Chau",
+                from_name: "Thao",
+            };
+
+            emailjs.send('service_mwsuvdu', 'template_flf7y8q', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert('Your response has been submitted! 😊');
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Failed to submit your response. Please try again.');
+                });
+        }
+    </script>
+</head>
+<body>
+    <div class="container" id="firstPage">
+        <h1>Bonjour! Tu me manques.. 💖</h1>
+        <p>I've been thinking about you, so this idea came up =)))</p>
+        <div class="question">Would you like to go on a date with me?</div>
+        <div class="options">
+            <button onclick="showSecondPage()">Yes</button>
+            <button onclick="showSecondPage()">Absolutely Yes!</button>
+        </div>
+    </div>
+
+    <div class="container" id="secondPage">
+        <h1>Bonne! 🎉</h1>
+        <p>Okiee, I know you miss me too uwu, when are you free for our date?</p>
+        <div class="dates">
+            <input type="date" id="datePicker">
+            <button onclick="showThirdPage()">Next</button>
+        </div>
+    </div>
+
+    <div class="container" id="thirdPage">
+        <h1>What shall we do? 😊</h1>
+        <p>Here are some fun activities we could do:</p>
+        <div class="activities">
+            <label><input type="checkbox"> Playing chess ♟️</label>
+            <label><input type="checkbox"> Coloring books 🎨</label>
+            <label><input type="checkbox"> Watching movies 🍿</label>
+            <label><input type="checkbox"> Practicing IELTS Reading Test 📚</label>
+            <label><input type="checkbox"> Other: </label>
+            <textarea id="otherActivity" placeholder="How about your idea..?"></textarea>
+        </div>
+        <button onclick="submitActivities()">Submit</button>
+    </div>
+</body>
+</html>
